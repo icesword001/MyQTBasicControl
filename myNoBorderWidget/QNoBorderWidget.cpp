@@ -59,7 +59,7 @@ bool QNoBorderWidget::nativeEvent(const QByteArray &eventType, void *message, lo
         int xPos = GET_X_LPARAM(msg->lParam) - this->frameGeometry().x();
         int yPos = GET_Y_LPARAM(msg->lParam) - this->frameGeometry().y();
 
-        if(m_bFrameEnable)
+        if(m_bFrameEnable && !::IsZoomed(msg->hwnd))
         {
             if(!isChildContorl(xPos, yPos))
             {
@@ -97,7 +97,12 @@ bool QNoBorderWidget::nativeEvent(const QByteArray &eventType, void *message, lo
             if(m_Widget)
             {
                 m_titleHeight = m_Widget->height();
-                QRect captionRect(m_nShadowWidth + m_nframeWidth, m_nShadowWidth + m_nframeWidth, this->width() - 2*m_nShadowWidth - 2* m_nframeWidth, m_Widget->height() - m_nframeWidth);
+                                int nS = 0;
+                if(!::IsZoomed(msg->hwnd))
+                {
+                    nS = m_nShadowWidth;
+                }
+                QRect captionRect(nS + m_nframeWidth, nS + m_nframeWidth, this->width() - 2*nS - 2* m_nframeWidth, m_Widget->height() - m_nframeWidth);
                 if (captionRect.contains(xPos, yPos) )
                 {
                     if(!isChildContorl(xPos, yPos))
